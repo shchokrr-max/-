@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 수학 문제 풀이 앱</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .language-selector:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .user-avatar.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .title h1 {
+            font-size: 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .usage-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .usage-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .premium-link {
+            color: #667eea;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .main-content {
+            flex: 1;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 16px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            background: rgba(102, 126, 234, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-camera {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+            color: white;
+        }
+
+        .btn-gallery {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .test-button-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(45deg, #9C27B0, #673AB7);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+        }
+
+        .btn-test {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            width: 100%;
+            border: 2px solid white;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-test:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .test-description {
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .btn-solve {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 15px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .btn-solve:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-solve:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: none;
+            text-align: center;
+        }
+
+        .preview-area.show {
+            display: block !important;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-area {
+            display: none;
+            text-align: left;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .solution-step {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .step-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: none;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .language-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-option:hover {
+            background: #f8f9fa;
+        }
+
+        .login-dropdown {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            min-width: 300px;
+            max-height: 600px;
+            z-index: 999999;
+            display: none;
+            padding: 0;
+            border: 2px solid #667eea;
+            overflow-y: auto;
+        }
+
+        .login-option {
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #f1f3f4;
+            font-size: 15px;
+            min-height: 60px;
+            font-weight: 500;
+        }
+
+        .login-option:hover {
+            background: #f8f9fa;
+            transform: translateX(3px);
+        }
+
+        .login-option:last-child {
+            border-bottom: none;
+        }
+
+        .login-option.guest {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-bottom: 2px solid #dee2e6;
+            padding: 20px;
+            min-height: 70px;
+        }
+
+        .login-option.logout {
+            border-top: 2px solid #dee2e6;
+            color: #dc3545;
+            margin-top: 0;
+            padding: 18px 20px;
+            min-height: 60px;
+        }
+
+        .login-option.logout:hover {
+            background: #fff5f5;
+        }
+
+        .login-option span:first-child {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header, .main-content {
+                padding: 20px 15px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                padding: 18px;
+            }
+        }
+
+        .pricing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .pricing-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .pricing-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .pricing-option {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .pricing-option.recommended {
+            border-color: #667eea;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .pricing-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .pricing-price {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pricing-features {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .close-modal {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="top-bar">
+                <div class="language-selector" onclick="toggleLanguageDropdown()">
+                    <span id="current-language">🇰🇷 한국어</span>
+                    <span style="margin-left: 5px;">▼</span>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-option" onclick="changeLanguage('ko', '🇰🇷 한국어')">🇰🇷 한국어</div>
+                        <div class="language-option" onclick="changeLanguage('en', '🇺🇸 English')">🇺🇸 English</div>
+                        <div class="language-option" onclick="changeLanguage('es', '🇪🇸 Español')">🇪🇸 Español</div>
+                        <div class="language-option" onclick="changeLanguage('fr', '🇫🇷 Français')">🇫🇷 Français</div>
+                        <div class="language-option" onclick="changeLanguage('de', '🇩🇪 Deutsch')">🇩🇪 Deutsch</div>
+                        <div class="language-option" onclick="changeLanguage('it', '🇮🇹 Italiano')">🇮🇹 Italiano</div>
+                        <div class="language-option" onclick="changeLanguage('pt', '🇵🇹 Português')">🇵🇹 Português</div>
+                        <div class="language-option" onclick="changeLanguage('ru', '🇷🇺 Русский')">🇷🇺 Русский</div>
+                        <div class="language-option" onclick="changeLanguage('ja', '🇯🇵 日本語')">🇯🇵 日本語</div>
+                        <div class="language-option" onclick="changeLanguage('zh-cn', '🇨🇳 简体中文')">🇨🇳 简体中文</div>
+                        <div class="language-option" onclick="changeLanguage('zh-tw', '🇹🇼 繁體中文')">🇹🇼 繁體中文</div>
+                        <div class="language-option" onclick="changeLanguage('ar', '🇸🇦 العربية')">🇸🇦 العربية</div>
+                        <div class="language-option" onclick="changeLanguage('hi', '🇮🇳 हिन्दी')">🇮🇳 हिन्दी</div>
+                        <div class="language-option" onclick="changeLanguage('th', '🇹🇭 ไทย')">🇹🇭 ไทย</div>
+                        <div class="language-option" onclick="changeLanguage('vi', '🇻🇳 Tiếng Việt')">🇻🇳 Tiếng Việt</div>
+                    </div>
+                </div>
+                <div class="user-avatar" onclick="showLoginMenu()">G</div>
+            </div>
+            
+            <div class="title">
+                <h1 id="app-title">AI 수학 문제 풀이</h1>
+                <div class="subtitle" id="app-subtitle">사진으로 찍으면 바로 해결!</div>
+            </div>
+            
+            <div class="usage-section">
+                <div class="usage-header">
+                    <span class="usage-text" id="usage-text">오늘 사용량: <span id="usage-count">1</span>/3</span>
+                    <a href="#" class="premium-link" onclick="showPricing()" id="premium-link">프리미엄 ></a>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 33%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로그인 드롭다운을 body 직접 자식으로 이동 -->
+        <div class="login-dropdown" id="loginDropdown">
+            <div class="login-option guest">
+                <span>👤</span>
+                <div>
+                    <div style="font-weight: bold;">게스트 사용자</div>
+                    <div style="font-size: 12px; color: #666;">데모 버전 - 실제 서비스에서는 로그인 가능</div>
+                </div>
+            </div>
+            <div class="login-option" onclick="loginWithGoogle()">
+                <span>🔴</span>
+                <span>Google로 로그인 (백엔드 연동 필요)</span>
+            </div>
+            <div class="login-option" onclick="loginWithKakao()">
+                <span>💛</span>
+                <span>카카오로 로그인 (개발자 등록 필요)</span>
+            </div>
+            <div class="login-option" onclick="loginWithNaver()">
+                <span>🟢</span>
+                <span>네이버로 로그인 (API 키 필요)</span>
+            </div>
+            <div class="login-option" onclick="loginWithApple()">
+                <span>⚫</span>
+                <span>Apple로 로그인 (개발자 계정 필요)</span>
+            </div>
+            <div class="login-option" onclick="loginWithFacebook()">
+                <span>🔵</span>
+                <span>Facebook으로 로그인 (앱 등록 필요)</span>
+            </div>
+            <div class="login-option logout" onclick="logout()">
+                <span>🚪</span>
+                <span>로그아웃 (데모)</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="upload-section">
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text" id="upload-text">수학 문제 사진 업로드</div>
+                    <div class="upload-subtext" id="upload-subtext">JPG, PNG 파일 (최대 10MB)</div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-camera" onclick="openCamera()">
+                        <span>📷</span>
+                        <span id="camera-text">카메라 촬영</span>
+                    </button>
+                    <button class="btn btn-gallery" onclick="openGallery()">
+                        <span>🖼️</span>
+                        <span id="gallery-text">갤러리 선택</span>
+                    </button>
+                </div>
+                
+                <!-- 미리보기 테스트 버튼 - 눈에 잘 띄게 -->
+                <div class="test-button-container">
+                    <button class="btn-test" onclick="showTestPreview()">
+                        <span style="font-size: 22px;">🧪</span>
+                        <span id="test-button-text">미리보기 테스트 (클릭)</span>
+                    </button>
+                    <div class="test-description" id="test-description-text">
+                        샘플 이미지로 미리보기 화면을 바로 확인해보세요
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-area" id="preview-area">
+                <h3 id="preview-title">선택한 이미지 미리보기</h3>
+                <img id="preview-image" class="preview-image" alt="수학 문제 미리보기">
+                <button class="btn-solve" onclick="solveProblem()" id="solve-button">
+                    🚀 <span id="solve-text">문제 풀이 시작</span>
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <h3 id="loading-text">AI가 문제를 분석 중입니다...</h3>
+                <p id="loading-subtext">잠시만 기다려주세요</p>
+            </div>
+
+            <div class="result-area" id="result-area">
+                <h2 class="result-title" id="result-title">📝 문제 풀이 결과</h2>
+                <div id="solution-steps"></div>
+            </div>
+
+            <div class="action-buttons" id="action-buttons">
+                <button class="btn-secondary" onclick="shareResult()" id="share-button">📤 공유</button>
+                <button class="btn-secondary" onclick="newProblem()" id="new-button">🔄 새 문제</button>
+                <button class="btn-secondary" onclick="resetApp()" id="reset-button">🏠 처음으로</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 가격 정책 모달 -->
+    <div class="pricing-modal" id="pricing-modal">
+        <div class="pricing-content">
+            <h2 class="pricing-title" id="pricing-title">💰 가격 정책</h2>
+            
+            <div class="pricing-option recommended">
+                <div class="pricing-name" id="premium-name">프리미엄 월간</div>
+                <div class="pricing-price" id="premium-price">₩9,900/월</div>
+                <div class="pricing-features" id="premium-features">• 월 1,500문제 해결<br>• 무제한 단계별 풀이<br>• 우선 고객지원</div>
+            </div>
+            
+            <button class="close-modal" onclick="closePricing()" id="close-pricing">닫기</button>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 숨겨진 파일 입력 -->
+    <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+
+    <script>
+        // 전역 변수
+        let currentUsage = 1;
+        const maxFreeUsage = 3;
+        let currentLanguage = 'ko';
+        let selectedFile = null;
+
+        // 언어별 텍스트 (15개 언어 완전 지원)
+        const translations = {
+            ko: {
+                'app-title': 'AI 수학 문제 풀이',
+                'app-subtitle': '사진으로 찍으면 바로 해결!',
+                'usage-text': '오늘 사용량: {count}/3',
+                'premium-link': '프리미엄 >',
+                'upload-text': '수학 문제 사진 업로드',
+                'upload-subtext': 'JPG, PNG 파일 (최대 10MB)',
+                'camera-text': '카메라 촬영',
+                'gallery-text': '갤러리 선택',
+                'test-button': '미리보기 테스트 (클릭)',
+                'test-description': '샘플 이미지로 미리보기 화면을 바로 확인해보세요',
+                'preview-title': '선택한 이미지 미리보기',
+                'solve-text': '문제 풀이 시작',
+                'loading-text': 'AI가 문제를 분석 중입니다...',
+                'loading-subtext': '잠시만 기다려주세요',
+                'result-title': '📝 문제 풀이 결과',
+                'share-button': '📤 공유',
+                'new-button': '🔄 새 문제',
+                'reset-button': '🏠 처음으로',
+                'pricing-title': '💰 가격 정책',
+                'premium-name': '프리미엄 월간',
+                'premium-price': '₩9,900/월',
+                'close-pricing': '닫기'
+            },
+            en: {
+                'app-title': 'AI Math Problem Solver',
+                'app-subtitle': 'Solve instantly with photos!',
+                'usage-text': 'Daily usage: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Upload math problem photo',
+                'upload-subtext': 'JPG, PNG files (max 10MB)',
+                'camera-text': 'Take Photo',
+                'gallery-text': 'Choose Gallery',
+                'test-button': 'Preview Test (Click)',
+                'test-description': 'Instantly check the preview screen with a sample image',
+                'preview-title': 'Selected Image Preview',
+                'solve-text': 'Start Solving',
+                'loading-text': 'AI is analyzing the problem...',
+                'loading-subtext': 'Please wait a moment',
+                'result-title': '📝 Solution Result',
+                'share-button': '📤 Share',
+                'new-button': '🔄 New Problem',
+                'reset-button': '🏠 Home',
+                'pricing-title': '💰 Pricing Plans',
+                'premium-name': 'Premium Monthly',
+                'premium-price': '$7.99/month',
+                'close-pricing': 'Close'
+            },
+            es: {
+                'app-title': 'Solucionador IA de Matemáticas',
+                'app-subtitle': '¡Resuelve al instante con fotos!',
+                'usage-text': 'Uso diario: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Subir foto del problema matemático',
+                'upload-subtext': 'Archivos JPG, PNG (máx 10MB)',
+                'camera-text': 'Tomar Foto',
+                'gallery-text': 'Elegir Galería',
+                'test-button': 'Prueba de Vista Previa (Clic)',
+                'test-description': 'Verifica instantáneamente la pantalla de vista previa con una imagen de muestra',
+                'preview-title': 'Vista Previa de Imagen Seleccionada',
+                'solve-text': 'Comenzar Resolución',
+                'loading-text': 'IA está analizando el problema...',
+                'loading-subtext': 'Por favor espera un momento',
+                'result-title': '📝 Resultado de la Solución',
+                'share-button': '📤 Compartir',
+                'new-button': '🔄 Nuevo Problema',
+                'reset-button': '🏠 Inicio',
+                'pricing-title': '💰 Planes de Precio',
+                'premium-name': 'Premium Mensual',
+                'premium-price': '$7.99/mes',
+                'close-pricing': 'Cerrar'
+            },
+            fr: {
+                'app-title': 'Solveur IA de Mathématiques',
+                'app-subtitle': 'Résolvez instantanément avec des photos!',
+                'usage-text': 'Usage quotidien: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Télécharger une photo du problème mathématique',
+                'upload-subtext': 'Fichiers JPG, PNG (max 10MB)',
+                'camera-text': 'Prendre Photo',
+                'gallery-text': 'Choisir Galerie',
+                'test-button': 'Test d\'Aperçu (Clic)',
+                'test-description': 'Vérifiez instantanément l\'écran d\'aperçu avec une image d\'exemple',
+                'preview-title': 'Aperçu de l\'Image Sélectionnée',
+                'solve-text': 'Commencer la Résolution',
+                'loading-text': 'L\'IA analyse le problème...',
+                'loading-subtext': 'Veuillez patienter un moment',
+                'result-title': '📝 Résultat de la Solution',
+                'share-button': '📤 Partager',
+                'new-button': '🔄 Nouveau Problème',
+                'reset-button': '🏠 Accueil',
+                'pricing-title': '💰 Plans Tarifaires',
+                'premium-name': 'Premium Mensuel',
+                'premium-price': '7,99€/mois',
+                'close-pricing': 'Fermer'
+            },
+            de: {
+                'app-title': 'KI Mathe-Problemlöser',
+                'app-subtitle': 'Sofort lösen mit Fotos!',
+                'usage-text': 'Tägliche Nutzung: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Mathe-Problem Foto hochladen',
+                'upload-subtext': 'JPG, PNG Dateien (max 10MB)',
+                'camera-text': 'Foto aufnehmen',
+                'gallery-text': 'Galerie wählen',
+                'test-button': 'Vorschau-Test (Klick)',
+                'test-description': 'Überprüfen Sie sofort den Vorschaubildschirm mit einem Beispielbild',
+                'preview-title': 'Bildvorschau der Auswahl',
+                'solve-text': 'Lösung starten',
+                'loading-text': 'KI analysiert das Problem...',
+                'loading-subtext': 'Bitte warten Sie einen Moment',
+                'result-title': '📝 Lösungsergebnis',
+                'share-button': '📤 Teilen',
+                'new-button': '🔄 Neues Problem',
+                'reset-button': '🏠 Startseite',
+                'pricing-title': '💰 Preispläne',
+                'premium-name': 'Premium Monatlich',
+                'premium-price': '€7,99/Monat',
+                'close-pricing': 'Schließen'
+            },
+            it: {
+                'app-title': 'Risolutore IA di Matematica',
+                'app-subtitle': 'Risolvi istantaneamente con le foto!',
+                'usage-text': 'Uso giornaliero: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Carica foto del problema matematico',
+                'upload-subtext': 'File JPG, PNG (max 10MB)',
+                'camera-text': 'Scatta Foto',
+                'gallery-text': 'Scegli Galleria',
+                'test-button': 'Test Anteprima (Clic)',
+                'test-description': 'Controlla istantaneamente la schermata di anteprima con un\'immagine di esempio',
+                'preview-title': 'Anteprima Immagine Selezionata',
+                'solve-text': 'Inizia Risoluzione',
+                'loading-text': 'L\'IA sta analizzando il problema...',
+                'loading-subtext': 'Attendere un momento',
+                'result-title': '📝 Risultato della Soluzione',
+                'share-button': '📤 Condividi',
+                'new-button': '🔄 Nuovo Problema',
+                'reset-button': '🏠 Home',
+                'pricing-title': '💰 Piani Tariffari',
+                'premium-name': 'Premium Mensile',
+                'premium-price': '€7,99/mese',
+                'close-pricing': 'Chiudi'
+            },
+            pt: {
+                'app-title': 'Solucionador IA de Matemática',
+                'app-subtitle': 'Resolva instantaneamente com fotos!',
+                'usage-text': 'Uso diário: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Enviar foto do problema matemático',
+                'upload-subtext': 'Arquivos JPG, PNG (máx 10MB)',
+                'camera-text': 'Tirar Foto',
+                'gallery-text': 'Escolher Galeria',
+                'test-button': 'Teste de Visualização (Clique)',
+                'test-description': 'Verifique instantaneamente a tela de visualização com uma imagem de exemplo',
+                'preview-title': 'Visualização da Imagem Selecionada',
+                'solve-text': 'Iniciar Resolução',
+                'loading-text': 'IA está analisando o problema...',
+                'loading-subtext': 'Por favor aguarde um momento',
+                'result-title': '📝 Resultado da Solução',
+                'share-button': '📤 Compartilhar',
+                'new-button': '🔄 Novo Problema',
+                'reset-button': '🏠 Início',
+                'pricing-title': '💰 Planos de Preços',
+                'premium-name': 'Premium Mensal',
+                'premium-price': 'R$39,90/mês',
+                'close-pricing': 'Fechar'
+            },
+            ru: {
+                'app-title': 'ИИ Решатель Математических Задач',
+                'app-subtitle': 'Решайте мгновенно с помощью фото!',
+                'usage-text': 'Ежедневное использование: {count}/3',
+                'premium-link': 'Премиум >',
+                'upload-text': 'Загрузить фото математической задачи',
+                'upload-subtext': 'Файлы JPG, PNG (макс 10МБ)',
+                'camera-text': 'Сделать Фото',
+                'gallery-text': 'Выбрать из Галереи',
+                'test-button': 'Тест Предпросмотра (Клик)',
+                'test-description': 'Мгновенно проверьте экран предпросмотра с помощью примера изображения',
+                'preview-title': 'Предварительный просмотр выбранного изображения',
+                'solve-text': 'Начать Решение',
+                'loading-text': 'ИИ анализирует задачу...',
+                'loading-subtext': 'Пожалуйста, подождите момент',
+                'result-title': '📝 Результат Решения',
+                'share-button': '📤 Поделиться',
+                'new-button': '🔄 Новая Задача',
+                'reset-button': '🏠 Главная',
+                'pricing-title': '💰 Тарифные Планы',
+                'premium-name': 'Премиум Ежемесячно',
+                'premium-price': '₽599/месяц',
+                'close-pricing': 'Закрыть'
+            },
+            ja: {
+                'app-title': 'AI数学問題解決',
+                'app-subtitle': '写真で瞬時に解決！',
+                'usage-text': '今日の使用量: {count}/3',
+                'premium-link': 'プレミアム >',
+                'upload-text': '数学問題の写真をアップロード',
+                'upload-subtext': 'JPG、PNGファイル（最大10MB）',
+                'camera-text': '写真を撮る',
+                'gallery-text': 'ギャラリーを選択',
+                'test-button': 'プレビューテスト（クリック）',
+                'test-description': 'サンプル画像でプレビュー画面をすぐに確認してください',
+                'preview-title': '選択した画像のプレビュー',
+                'solve-text': '解決を開始',
+                'loading-text': 'AIが問題を分析中です...',
+                'loading-subtext': 'しばらくお待ちください',
+                'result-title': '📝 解決結果',
+                'share-button': '📤 共有',
+                'new-button': '🔄 新しい問題',
+                'reset-button': '🏠 ホーム',
+                'pricing-title': '💰 料金プラン',
+                'premium-name': 'プレミアム月額',
+                'premium-price': '¥980/月',
+                'close-pricing': '閉じる'
+            },
+            'zh-cn': {
+                'app-title': 'AI数学题解决器',
+                'app-subtitle': '拍照即可解题！',
+                'usage-text': '今日使用量: {count}/3',
+                'premium-link': '高级版 >',
+                'upload-text': '上传数学题照片',
+                'upload-subtext': 'JPG、PNG文件（最大10MB）',
+                'camera-text': '拍照',
+                'gallery-text': '选择相册',
+                'test-button': '预览测试（点击）',
+                'test-description': '用示例图片立即查看预览屏幕',
+                'preview-title': '选中图片预览',
+                'solve-text': '开始解题',
+                'loading-text': 'AI正在分析题目...',
+                'loading-subtext': '请稍候',
+                'result-title': '📝 解题结果',
+                'share-button': '📤 分享',
+                'new-button': '🔄 新题目',
+                'reset-button': '🏠 首页',
+                'pricing-title': '💰 价格方案',
+                'premium-name': '高级版月付',
+                'premium-price': '¥58/月',
+                'close-pricing': '关闭'
+            },
+            'zh-tw': {
+                'app-title': 'AI數學題解決器',
+                'app-subtitle': '拍照即可解題！',
+                'usage-text': '今日使用量: {count}/3',
+                'premium-link': '高級版 >',
+                'upload-text': '上傳數學題照片',
+                'upload-subtext': 'JPG、PNG檔案（最大10MB）',
+                'camera-text': '拍照',
+                'gallery-text': '選擇相簿',
+                'test-button': '預覽測試（點擊）',
+                'test-description': '用範例圖片立即查看預覽畫面',
+                'preview-title': '選中圖片預覽',
+                'solve-text': '開始解題',
+                'loading-text': 'AI正在分析題目...',
+                'loading-subtext': '請稍候',
+                'result-title': '📝 解題結果',
+                'share-button': '📤 分享',
+                'new-button': '🔄 新題目',
+                'reset-button': '🏠 首頁',
+                'pricing-title': '💰 價格方案',
+                'premium-name': '高級版月付',
+                'premium-price': 'NT$290/月',
+                'close-pricing': '關閉'
+            },
+            ar: {
+                'app-title': 'حلال مسائل الرياضيات بالذكاء الاصطناعي',
+                'app-subtitle': 'حل فوري بالصور!',
+                'usage-text': 'الاستخدام اليومي: {count}/3',
+                'premium-link': 'بريميوم >',
+                'upload-text': 'تحميل صورة المسألة الرياضية',
+                'upload-subtext': 'ملفات JPG، PNG (الحد الأقصى 10 ميجابايت)',
+                'camera-text': 'التقاط صورة',
+                'gallery-text': 'اختيار من المعرض',
+                'test-button': 'اختبار المعاينة (انقر)',
+                'test-description': 'تحقق فوراً من شاشة المعاينة بصورة تجريبية',
+                'preview-title': 'معاينة الصورة المختارة',
+                'solve-text': 'بدء الحل',
+                'loading-text': 'الذكاء الاصطناعي يحلل المسألة...',
+                'loading-subtext': 'يرجى الانتظار لحظة',
+                'result-title': '📝 نتيجة الحل',
+                'share-button': '📤 مشاركة',
+                'new-button': '🔄 مسألة جديدة',
+                'reset-button': '🏠 الصفحة الرئيسية',
+                'pricing-title': '💰 خطط الأسعار',
+                'premium-name': 'بريميوم شهري',
+                'premium-price': '29.99 ريال/شهر',
+                'close-pricing': 'إغلاق'
+            },
+            hi: {
+                'app-title': 'AI गणित समस्या समाधानकर्ता',
+                'app-subtitle': 'फोटो से तुरंत हल करें!',
+                'usage-text': 'दैनिक उपयोग: {count}/3',
+                'premium-link': 'प्रीमियम >',
+                'upload-text': 'गणित समस्या फोटो अपलोड करें',
+                'upload-subtext': 'JPG, PNG फाइलें (अधिकतम 10MB)',
+                'camera-text': 'फोटो लें',
+                'gallery-text': 'गैलरी चुनें',
+                'test-button': 'पूर्वावलोकन परीक्षण (क्लिक)',
+                'test-description': 'नमूना छवि के साथ पूर्वावलोकन स्क्रीन को तुरंत जांचें',
+                'preview-title': 'चयनित छवि पूर्वावलोकन',
+                'solve-text': 'समाधान शुरू करें',
+                'loading-text': 'AI समस्या का विश्लेषण कर रहा है...',
+                'loading-subtext': 'कृपया एक क्षण प्रतीक्षा करें',
+                'result-title': '📝 समाधान परिणाम',
+                'share-button': '📤 साझा करें',
+                'new-button': '🔄 नई समस्या',
+                'reset-button': '🏠 होम',
+                'pricing-title': '💰 मूल्य योजनाएं',
+                'premium-name': 'प्रीमियम मासिक',
+                'premium-price': '₹599/माह',
+                'close-pricing': 'बंद करें'
+            },
+            th: {
+                'app-title': 'AI แก้ปัญหาคณิตศาสตร์',
+                'app-subtitle': 'แก้ได้ทันทีด้วยภาพถ่าย!',
+                'usage-text': 'การใช้งานรายวัน: {count}/3',
+                'premium-link': 'พรีเมียม >',
+                'upload-text': 'อัปโหลดภาพปัญหาคณิตศาสตร์',
+                'upload-subtext': 'ไฟล์ JPG, PNG (สูงสุด 10MB)',
+                'camera-text': 'ถ่ายภาพ',
+                'gallery-text': 'เลือกจากแกลเลอรี',
+                'test-button': 'ทดสอบตัวอย่าง (คลิก)',
+                'test-description': 'ตรวจสอบหน้าตัวอย่างทันทีด้วยภาพตัวอย่าง',
+                'preview-title': 'ตัวอย่างภาพที่เลือก',
+                'solve-text': 'เริ่มแก้ปัญหา',
+                'loading-text': 'AI กำลังวิเคราะห์ปัญหา...',
+                'loading-subtext': 'กรุณารอสักครู่',
+                'result-title': '📝 ผลลัพธ์การแก้ปัญหา',
+                'share-button': '📤 แชร์',
+                'new-button': '🔄 ปัญหาใหม่',
+                'reset-button': '🏠 หน้าหลัก',
+                'pricing-title': '💰 แผนราคา',
+                'premium-name': 'พรีเมียมรายเดือน',
+                'premium-price': '฿299/เดือน',
+                'close-pricing': 'ปิด'
+            },
+            vi: {
+                'app-title': 'AI Giải Toán',
+                'app-subtitle': 'Giải ngay bằng ảnh chụp!',
+                'usage-text': 'Sử dụng hàng ngày: {count}/3',
+                'premium-link': 'Premium >',
+                'upload-text': 'Tải lên ảnh bài toán',
+                'upload-subtext': 'Tệp JPG, PNG (tối đa 10MB)',
+                'camera-text': 'Chụp Ảnh',
+                'gallery-text': 'Chọn Thư Viện',
+                'test-button': 'Kiểm Tra Xem Trước (Nhấp)',
+                'test-description': 'Kiểm tra ngay màn hình xem trước với hình ảnh mẫu',
+                'preview-title': 'Xem Trước Hình Ảnh Đã Chọn',
+                'solve-text': 'Bắt Đầu Giải',
+                'loading-text': 'AI đang phân tích bài toán...',
+                'loading-subtext': 'Vui lòng đợi một chút',
+                'result-title': '📝 Kết Quả Giải',
+                'share-button': '📤 Chia Sẻ',
+                'new-button': '🔄 Bài Mới',
+                'reset-button': '🏠 Trang Chủ',
+                'pricing-title': '💰 Gói Giá',
+                'premium-name': 'Premium Hàng Tháng',
+                'premium-price': '199.000đ/tháng',
+                'close-pricing': 'Đóng'
+            }
+        };
+
+        // 언어 드롭다운 토글
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // 언어 변경 (완전 수정 버전)
+        function changeLanguage(lang, displayText) {
+            console.log(`언어 변경 시작: ${lang} (${displayText})`);
+            
+            currentLanguage = lang;
+            document.getElementById('current-language').textContent = displayText;
+            document.getElementById('languageDropdown').style.display = 'none';
+            
+            // 번역 데이터 가져오기
+            const texts = translations[lang] || translations['ko'];
+            console.log('번역 데이터:', texts);
+            
+            // 모든 텍스트 요소 업데이트
+            const elementsToUpdate = [
+                'app-title', 'app-subtitle', 'premium-link', 'upload-text', 
+                'upload-subtext', 'camera-text', 'gallery-text', 'preview-title',
+                'solve-text', 'loading-text', 'loading-subtext', 'result-title',
+                'share-button', 'new-button', 'reset-button', 'pricing-title',
+                'premium-name', 'premium-price', 'close-pricing'
+            ];
+            
+            elementsToUpdate.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && texts[elementId]) {
+                    element.textContent = texts[elementId];
+                    console.log(`✅ ${elementId} 업데이트: ${texts[elementId]}`);
+                } else {
+                    console.log(`❌ ${elementId} 요소 또는 번역 없음`);
+                }
+            });
+            
+            // 사용량 텍스트 특별 처리 (카운터 포함)
+            const usageElement = document.querySelector('.usage-text');
+            if (usageElement && texts['usage-text']) {
+                usageElement.innerHTML = texts['usage-text'].replace('{count}', `<span id="usage-count">${currentUsage}</span>`);
+                console.log(`✅ 사용량 텍스트 업데이트: ${texts['usage-text']}`);
+            }
+            
+            // 테스트 버튼 텍스트 업데이트 (ID로 직접 접근)
+            const testButtonText = document.getElementById('test-button-text');
+            if (testButtonText && texts['test-button']) {
+                testButtonText.textContent = texts['test-button'];
+                console.log(`✅ 테스트 버튼 업데이트: ${texts['test-button']}`);
+            }
+            
+            // 테스트 설명 텍스트 업데이트 (ID로 직접 접근)
+            const testDescriptionText = document.getElementById('test-description-text');
+            if (testDescriptionText && texts['test-description']) {
+                testDescriptionText.textContent = texts['test-description'];
+                console.log(`✅ 테스트 설명 업데이트: ${texts['test-description']}`);
+            }
+            
+            console.log(`✅ 언어 변경 완료: ${displayText}`);
+            showToast(`언어가 ${displayText}로 변경되었습니다`);
+        }
+
+        // 로그인 메뉴 표시
+        function showLoginMenu() {
+            console.log('=== 로그인 메뉴 클릭됨 ===');
+            
+            const dropdown = document.getElementById('loginDropdown');
+            
+            if (!dropdown) {
+                console.error('❌ loginDropdown 요소를 찾을 수 없습니다!');
+                alert('로그인 드롭다운을 찾을 수 없습니다!');
+                return;
+            }
+            
+            const isVisible = dropdown.style.display === 'block';
+            
+            if (isVisible) {
+                dropdown.style.display = 'none';
+            } else {
+                dropdown.style.display = 'block';
+                dropdown.style.position = 'fixed';
+                dropdown.style.top = '60px';
+                dropdown.style.right = '10px';
+                dropdown.style.zIndex = '999999';
+            }
+            
+            const languageDropdown = document.getElementById('languageDropdown');
+            if (languageDropdown) {
+                languageDropdown.style.display = 'none';
+            }
+        }
+
+        // 소셜 로그인 함수들 (현실적인 메시지)
+        function loginWithGoogle() {
+            showToast('Google OAuth 설정이 필요합니다. 실제 서비스에서는 백엔드 연동 후 사용 가능합니다.');
+            closeLoginDropdown();
+        }
+
+        function loginWithKakao() {
+            showToast('카카오 개발자 등록이 필요합니다. 백엔드 서버와 연동하면 실제 로그인이 가능합니다.');
+            closeLoginDropdown();
+        }
+
+        function loginWithNaver() {
+            showToast('네이버 개발자 센터 등록 후 사용 가능합니다. 현재는 UI 데모 버전입니다.');
+            closeLoginDropdown();
+        }
+
+        function loginWithApple() {
+            showToast('Apple Developer 계정이 필요합니다. 실제 앱 배포 시 연동 가능합니다.');
+            closeLoginDropdown();
+        }
+
+        function loginWithFacebook() {
+            showToast('Facebook for Developers 설정 후 사용 가능합니다.');
+            closeLoginDropdown();
+        }
+
+        function logout() { 
+            showToast('로그아웃되었습니다. (데모에서는 게스트 상태로 유지됩니다)');
+            closeLoginDropdown();
+            currentUsage = 0;
+            updateUsageDisplay();
+        }
+
+        // 카메라/갤러리 열기
+        function openCamera() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.onchange = handleFileSelect;
+            input.click();
+        }
+
+        function openGallery() {
+            document.getElementById('file-input').click();
+        }
+
+        // 파일 선택 처리
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('이미지 파일만 업로드할 수 있습니다');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('파일 크기는 10MB 이하여야 합니다');
+                return;
+            }
+
+            selectedFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImage = document.getElementById('preview-image');
+                previewImage.src = e.target.result;
+                
+                document.getElementById('upload-section').style.display = 'none';
+                document.getElementById('preview-area').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            
+            showToast('이미지가 선택되었습니다');
+        }
+
+        // 테스트 미리보기 표시 (다국어 지원)
+        function showTestPreview() {
+            console.log('=== 테스트 미리보기 시작 ===');
+            
+            const uploadSection = document.getElementById('upload-section');
+            const previewArea = document.getElementById('preview-area');
+            const previewImage = document.getElementById('preview-image');
+            
+            if (!uploadSection || !previewArea || !previewImage) {
+                console.error('필요한 요소를 찾을 수 없습니다');
+                return;
+            }
+
+            // 현재 언어의 텍스트 가져오기
+            const texts = translations[currentLanguage] || translations['ko'];
+            
+            // Canvas로 다국어 테스트 이미지 생성
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+            
+            // 배경
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 400, 300);
+            
+            // 테두리
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(5, 5, 390, 290);
+            
+            // 언어별 텍스트 설정
+            const canvasTexts = {
+                ko: {
+                    title: '🧪 테스트 미리보기',
+                    problem: '수학 문제 예시:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: '이 화면이 바로 미리보기입니다!',
+                    description2: '실제 이미지를 선택하면',
+                    description3: '이렇게 표시됩니다',
+                    success: '✅ 미리보기 성공!'
+                },
+                en: {
+                    title: '🧪 Preview Test',
+                    problem: 'Math Problem Example:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'This is the preview screen!',
+                    description2: 'When you select a real image',
+                    description3: 'it will be displayed like this',
+                    success: '✅ Preview Success!'
+                },
+                es: {
+                    title: '🧪 Prueba de Vista Previa',
+                    problem: 'Ejemplo de Problema:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: '¡Esta es la pantalla de vista previa!',
+                    description2: 'Cuando selecciones una imagen real',
+                    description3: 'se mostrará así',
+                    success: '✅ ¡Vista Previa Exitosa!'
+                },
+                fr: {
+                    title: '🧪 Test d\'Aperçu',
+                    problem: 'Exemple de Problème:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Ceci est l\'écran d\'aperçu!',
+                    description2: 'Quand vous sélectionnez une vraie image',
+                    description3: 'elle s\'affichera ainsi',
+                    success: '✅ Aperçu Réussi!'
+                },
+                de: {
+                    title: '🧪 Vorschau-Test',
+                    problem: 'Mathematik Beispiel:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Das ist der Vorschaubildschirm!',
+                    description2: 'Wenn Sie ein echtes Bild wählen',
+                    description3: 'wird es so angezeigt',
+                    success: '✅ Vorschau Erfolgreich!'
+                },
+                it: {
+                    title: '🧪 Test Anteprima',
+                    problem: 'Esempio di Problema:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Questa è la schermata di anteprima!',
+                    description2: 'Quando selezioni un\'immagine reale',
+                    description3: 'verrà visualizzata così',
+                    success: '✅ Anteprima Riuscita!'
+                },
+                pt: {
+                    title: '🧪 Teste de Visualização',
+                    problem: 'Exemplo de Problema:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Esta é a tela de visualização!',
+                    description2: 'Quando você selecionar uma imagem real',
+                    description3: 'será exibida assim',
+                    success: '✅ Visualização Bem-sucedida!'
+                },
+                ru: {
+                    title: '🧪 Тест Предпросмотра',
+                    problem: 'Пример Задачи:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Это экран предпросмотра!',
+                    description2: 'Когда вы выберете реальное изображение',
+                    description3: 'оно будет отображаться так',
+                    success: '✅ Предпросмотр Успешен!'
+                },
+                ja: {
+                    title: '🧪 プレビューテスト',
+                    problem: '数学問題例:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'これがプレビュー画面です！',
+                    description2: '実際の画像を選択すると',
+                    description3: 'このように表示されます',
+                    success: '✅ プレビュー成功！'
+                },
+                'zh-cn': {
+                    title: '🧪 预览测试',
+                    problem: '数学题示例:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: '这就是预览屏幕！',
+                    description2: '当您选择真实图片时',
+                    description3: '就会这样显示',
+                    success: '✅ 预览成功！'
+                },
+                'zh-tw': {
+                    title: '🧪 預覽測試',
+                    problem: '數學題範例:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: '這就是預覽畫面！',
+                    description2: '當您選擇真實圖片時',
+                    description3: '就會這樣顯示',
+                    success: '✅ 預覽成功！'
+                },
+                ar: {
+                    title: '🧪 اختبار المعاينة',
+                    problem: 'مثال مسألة رياضية:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'هذه شاشة المعاينة!',
+                    description2: 'عندما تختار صورة حقيقية',
+                    description3: 'ستظهر هكذا',
+                    success: '✅ معاينة ناجحة!'
+                },
+                hi: {
+                    title: '🧪 पूर्वावलोकन परीक्षण',
+                    problem: 'गणित समस्या उदाहरण:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'यह पूर्वावलोकन स्क्रीन है!',
+                    description2: 'जब आप वास्तविक छवि चुनते हैं',
+                    description3: 'तो यह इस तरह दिखाई देगी',
+                    success: '✅ पूर्वावलोकन सफल!'
+                },
+                th: {
+                    title: '🧪 ทดสอบตัวอย่าง',
+                    problem: 'ตัวอย่างปัญหาคณิตศาสตร์:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'นี่คือหน้าตัวอย่าง!',
+                    description2: 'เมื่อคุณเลือกภาพจริง',
+                    description3: 'มันจะแสดงแบบนี้',
+                    success: '✅ ตัวอย่างสำเร็จ!'
+                },
+                vi: {
+                    title: '🧪 Kiểm Tra Xem Trước',
+                    problem: 'Ví dụ bài toán:',
+                    equation: 'x² + 5x + 6 = 0',
+                    description1: 'Đây là màn hình xem trước!',
+                    description2: 'Khi bạn chọn hình ảnh thật',
+                    description3: 'nó sẽ hiển thị như thế này',
+                    success: '✅ Xem Trước Thành Công!'
+                }
+            };
+            
+            const currentTexts = canvasTexts[currentLanguage] || canvasTexts['ko'];
+            
+            // 제목
+            ctx.fillStyle = '#333333';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(currentTexts.title, 200, 40);
+            
+            // 문제
+            ctx.font = '16px Arial';
+            ctx.fillText(currentTexts.problem, 200, 80);
+            
+            // 수식
+            ctx.font = 'bold 24px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText(currentTexts.equation, 200, 120);
+            
+            // 설명
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#666666';
+            ctx.fillText(currentTexts.description1, 200, 160);
+            ctx.fillText(currentTexts.description2, 200, 180);
+            ctx.fillText(currentTexts.description3, 200, 200);
+            
+            // 성공 표시
+            ctx.fillStyle = '#28a745';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(currentTexts.success, 200, 240);
+            
+            // 이미지 설정
+            previewImage.src = canvas.toDataURL('image/png');
+            previewImage.style.border = '3px solid #667eea';
+            previewImage.style.borderRadius = '12px';
+            previewImage.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+            
+            // 화면 전환
+            uploadSection.style.display = 'none';
+            previewArea.style.display = 'block';
+            
+            // selectedFile 시뮬레이션
+            selectedFile = { name: 'test-math-problem.png', type: 'image/png' };
+            
+            console.log('✅ 테스트 미리보기 완료 (다국어)');
+            showToast('🧪 ' + texts['test-button'] + ' 완료!');
+        }
+
+        // 문제 풀이 시작
+        function solveProblem() {
+            if (!selectedFile) {
+                showToast('먼저 이미지를 선택해주세요');
+                return;
+            }
+
+            if (currentUsage >= maxFreeUsage) {
+                showToast('일일 무료 사용량을 초과했습니다');
+                showPricing();
+                return;
+            }
+
+            document.getElementById('preview-area').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            setTimeout(() => {
+                showResult();
+                updateUsage();
+            }, 3000);
+        }
+
+        // 결과 표시 (다국어 지원)
+        function showResult() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result-area').style.display = 'block';
+            document.getElementById('action-buttons').style.display = 'flex';
+
+            // 현재 언어의 번역 데이터 가져오기
+            const texts = translations[currentLanguage] || translations['ko'];
+            
+            // 언어별 풀이 과정 데이터
+            const solutionsByLanguage = {
+                ko: [
+                    { title: '1단계: 문제 분석', content: '이차방정식을 분석합니다: x² + 5x + 6 = 0' },
+                    { title: '2단계: 인수분해', content: '(x + 2)(x + 3) = 0' },
+                    { title: '3단계: 해 구하기', content: 'x = -2 또는 x = -3' }
+                ],
+                en: [
+                    { title: 'Step 1: Problem Analysis', content: 'Analyze the quadratic equation: x² + 5x + 6 = 0' },
+                    { title: 'Step 2: Factorization', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Step 3: Find Solutions', content: 'x = -2 or x = -3' }
+                ],
+                es: [
+                    { title: 'Paso 1: Análisis del Problema', content: 'Analizar la ecuación cuadrática: x² + 5x + 6 = 0' },
+                    { title: 'Paso 2: Factorización', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Paso 3: Encontrar Soluciones', content: 'x = -2 o x = -3' }
+                ],
+                fr: [
+                    { title: 'Étape 1: Analyse du Problème', content: 'Analyser l\'équation quadratique: x² + 5x + 6 = 0' },
+                    { title: 'Étape 2: Factorisation', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Étape 3: Trouver les Solutions', content: 'x = -2 ou x = -3' }
+                ],
+                de: [
+                    { title: 'Schritt 1: Problemanalyse', content: 'Analysiere die quadratische Gleichung: x² + 5x + 6 = 0' },
+                    { title: 'Schritt 2: Faktorisierung', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Schritt 3: Lösungen finden', content: 'x = -2 oder x = -3' }
+                ],
+                it: [
+                    { title: 'Passo 1: Analisi del Problema', content: 'Analizzare l\'equazione quadratica: x² + 5x + 6 = 0' },
+                    { title: 'Passo 2: Fattorizzazione', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Passo 3: Trovare le Soluzioni', content: 'x = -2 o x = -3' }
+                ],
+                pt: [
+                    { title: 'Passo 1: Análise do Problema', content: 'Analisar a equação quadrática: x² + 5x + 6 = 0' },
+                    { title: 'Passo 2: Fatoração', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Passo 3: Encontrar Soluções', content: 'x = -2 ou x = -3' }
+                ],
+                ru: [
+                    { title: 'Шаг 1: Анализ Проблемы', content: 'Анализируем квадратное уравнение: x² + 5x + 6 = 0' },
+                    { title: 'Шаг 2: Факторизация', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Шаг 3: Найти Решения', content: 'x = -2 или x = -3' }
+                ],
+                ja: [
+                    { title: 'ステップ1: 問題分析', content: '二次方程式を分析します: x² + 5x + 6 = 0' },
+                    { title: 'ステップ2: 因数分解', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'ステップ3: 解を求める', content: 'x = -2 または x = -3' }
+                ],
+                'zh-cn': [
+                    { title: '第1步: 问题分析', content: '分析二次方程: x² + 5x + 6 = 0' },
+                    { title: '第2步: 因式分解', content: '(x + 2)(x + 3) = 0' },
+                    { title: '第3步: 求解', content: 'x = -2 或 x = -3' }
+                ],
+                'zh-tw': [
+                    { title: '第1步: 問題分析', content: '分析二次方程: x² + 5x + 6 = 0' },
+                    { title: '第2步: 因式分解', content: '(x + 2)(x + 3) = 0' },
+                    { title: '第3步: 求解', content: 'x = -2 或 x = -3' }
+                ],
+                ar: [
+                    { title: 'الخطوة 1: تحليل المسألة', content: 'تحليل المعادلة التربيعية: x² + 5x + 6 = 0' },
+                    { title: 'الخطوة 2: التحليل إلى عوامل', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'الخطوة 3: إيجاد الحلول', content: 'x = -2 أو x = -3' }
+                ],
+                hi: [
+                    { title: 'चरण 1: समस्या विश्लेषण', content: 'द्विघात समीकरण का विश्लेषण करें: x² + 5x + 6 = 0' },
+                    { title: 'चरण 2: गुणनखंड', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'चरण 3: समाधान ढूंढें', content: 'x = -2 या x = -3' }
+                ],
+                th: [
+                    { title: 'ขั้นตอน 1: วิเคราะห์ปัญหา', content: 'วิเคราะห์สมการกำลังสอง: x² + 5x + 6 = 0' },
+                    { title: 'ขั้นตอน 2: การแยกตัวประกอบ', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'ขั้นตอน 3: หาคำตอบ', content: 'x = -2 หรือ x = -3' }
+                ],
+                vi: [
+                    { title: 'Bước 1: Phân Tích Bài Toán', content: 'Phân tích phương trình bậc hai: x² + 5x + 6 = 0' },
+                    { title: 'Bước 2: Phân Tích Thành Nhân Tử', content: '(x + 2)(x + 3) = 0' },
+                    { title: 'Bước 3: Tìm Nghiệm', content: 'x = -2 hoặc x = -3' }
+                ]
+            };
+
+            // 현재 언어에 맞는 풀이 과정 선택
+            const solutionSteps = solutionsByLanguage[currentLanguage] || solutionsByLanguage['ko'];
+
+            const container = document.getElementById('solution-steps');
+            container.innerHTML = '';
+
+            solutionSteps.forEach(step => {
+                const div = document.createElement('div');
+                div.className = 'solution-step';
+                div.innerHTML = `<div class="step-title">${step.title}</div><div class="step-content">${step.content}</div>`;
+                container.appendChild(div);
+            });
+            
+            console.log(`✅ 결과 화면을 ${currentLanguage} 언어로 표시`);
+        }
+
+        // 사용량 업데이트
+        function updateUsage() {
+            currentUsage++;
+            updateUsageDisplay();
+            if (currentUsage >= maxFreeUsage) {
+                showToast('일일 무료 사용량이 모두 소진되었습니다');
+            }
+        }
+
+        function updateUsageDisplay() {
+            const usageCount = document.getElementById('usage-count');
+            if (usageCount) {
+                usageCount.textContent = currentUsage;
+            }
+            const progressPercent = Math.min((currentUsage / maxFreeUsage) * 100, 100);
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+        }
+
+        // 기타 함수들
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function showPricing() {
+            document.getElementById('pricing-modal').style.display = 'flex';
+        }
+
+        function closePricing() {
+            document.getElementById('pricing-modal').style.display = 'none';
+        }
+
+        function shareResult() {
+            showToast('결과를 공유했습니다');
+        }
+
+        function newProblem() {
+            selectedFile = null;
+            document.getElementById('result-area').style.display = 'none';
+            document.getElementById('action-buttons').style.display = 'none';
+            document.getElementById('upload-section').style.display = 'block';
+        }
+
+        function resetApp() {
+            selectedFile = null;
+            document.getElementById('preview-area').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result-area').style.display = 'none';
+            document.getElementById('action-buttons').style.display = 'none';
+            document.getElementById('upload-section').style.display = 'block';
+        }
+
+        // 외부 클릭 시 드롭다운 닫기
+        document.addEventListener('click', function(event) {
+            const languageSelector = document.querySelector('.language-selector');
+            const languageDropdown = document.getElementById('languageDropdown');
+            const userAvatar = document.querySelector('.user-avatar');
+            const loginDropdown = document.getElementById('loginDropdown');
+            
+            if (languageSelector && !languageSelector.contains(event.target)) {
+                languageDropdown.style.display = 'none';
+            }
+            
+            if (userAvatar && loginDropdown && !userAvatar.contains(event.target) && !loginDropdown.contains(event.target)) {
+                loginDropdown.style.display = 'none';
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('pricing-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePricing();
+            }
+        });
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI 수학 문제 풀이 앱이 로드되었습니다!');
+            document.getElementById('upload-section').style.display = 'block';
+            document.getElementById('preview-area').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result-area').style.display = 'none';
+            document.getElementById('action-buttons').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
